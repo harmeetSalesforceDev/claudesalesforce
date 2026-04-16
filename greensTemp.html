@@ -23,10 +23,13 @@
       background-color: #1E2B4A;
       border-radius: 20px 20px 0 0;
       padding: 32px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+          display: inline-block;
+    width: 100%;
+    vertical-align: bottom;
     }
+	.header-logo{
+	float:left;
+	}
     .header img {
       height: 44px;
       display: block;
@@ -41,6 +44,7 @@
       color: #90D45A;
       letter-spacing: 0.5px;
       text-transform: uppercase;
+	  float:right;
     }
 
     /* ── HERO BAND ── */
@@ -166,22 +170,22 @@
     .step {
       display: flex;
       align-items: flex-start;
-      gap: 16px;
       margin-bottom: 18px;
     }
+	.step-content {
+    padding-left: 15px;
+}
     .step-num {
       flex-shrink: 0;
       width: 32px;
       height: 32px;
+	  line-height:32px;
+	  text-align:center;
       border-radius: 50%;
       background: #1E2B4A;
       color: #fff;
       font-size: 13px;
       font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 1px;
     }
     .step-content .step-heading {
       font-size: 15px;
@@ -208,7 +212,7 @@
     .cta-btn {
       display: inline-block;
       background: #1E2B4A;
-      color: #fff;
+      color: #fff !important;
       font-family: 'DM Sans', sans-serif;
       font-size: 15px;
       font-weight: 500;
@@ -279,9 +283,11 @@
 
     <!-- HEADER -->
     <div class="header">
-      <a href="#">
+      <span class="header-logo">
+		<a href="#">
         <img src="https://greenslistmedia.s3.amazonaws.com/Barrister/co-logo.png" alt="Greens List">
       </a>
+	  </span>
       <span class="header-badge">Onboarding</span>
     </div>
 
