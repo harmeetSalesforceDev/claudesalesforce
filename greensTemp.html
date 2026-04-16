@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Onboarding Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: #EDECEA;
+      font-family: 'DM Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrapper {
+      max-width: 620px;
+      margin: 48px auto;
+      padding: 0 16px 48px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background-color: #1E2B4A;
+      border-radius: 20px 20px 0 0;
+      padding: 32px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header img {
+      height: 44px;
+      display: block;
+    }
+    .header-badge {
+      background: rgba(121, 192, 78, 0.18);
+      border: 1px solid rgba(121, 192, 78, 0.4);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #90D45A;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* ── HERO BAND ── */
+    .hero {
+      background: linear-gradient(135deg, #243358 0%, #1E2B4A 60%, #162038 100%);
+      padding: 44px 40px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(121,192,78,0.08);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: 20px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: rgba(121,192,78,0.05);
+    }
+    .hero-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #79C04E;
+      margin-bottom: 12px;
+    }
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 34px;
+      font-weight: 400;
+      color: #FFFFFF;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero h1 span {
+      color: #79C04E;
+    }
+    .hero p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+      max-width: 420px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── BODY ── */
+    .body {
+      background: #FFFFFF;
+      padding: 40px 40px 36px;
+    }
+    .greeting {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1E2B4A;
+      margin-bottom: 12px;
+    }
+    .intro {
+      font-size: 15px;
+      color: #5A5F6B;
+      line-height: 1.75;
+      margin-bottom: 32px;
+    }
+
+    /* ── REFERENCE BOX ── */
+    .ref-box {
+      background: #F5FAF0;
+      border: 1.5px solid #C3E6A0;
+      border-radius: 14px;
+      padding: 28px 28px 24px;
+      margin-bottom: 36px;
+      text-align: center;
+    }
+    .ref-box .ref-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #4A8A28;
+      margin-bottom: 10px;
+    }
+    .ref-box .ref-number {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px;
+      color: #1E2B4A;
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+    }
+    .ref-box .ref-note {
+      font-size: 13px;
+      color: #6A7280;
+      line-height: 1.6;
+    }
+    .ref-box .ref-note strong {
+      color: #3A7A1E;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: #EEF0F3;
+      margin: 0 0 32px;
+    }
+
+    /* ── STEPS ── */
+    .steps-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #9CA3AF;
+      margin-bottom: 20px;
+    }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1E2B4A;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .step-content .step-heading {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1E2B4A;
+      margin-bottom: 3px;
+    }
+    .step-content .step-body {
+      font-size: 14px;
+      color: #6B7280;
+      line-height: 1.6;
+    }
+    .step-content .step-body a {
+      color: #4A9A28;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* ── CTA BUTTON ── */
+    .cta-wrap {
+      text-align: center;
+      padding: 32px 0 8px;
+    }
+    .cta-btn {
+      display: inline-block;
+      background: #1E2B4A;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 14px 36px;
+      border-radius: 100px;
+      letter-spacing: 0.2px;
+    }
+    .cta-sub {
+      font-size: 12px;
+      color: #9CA3AF;
+      margin-top: 12px;
+    }
+
+    /* ── SUPPORT BAR ── */
+    .support {
+      background: #F9FAFB;
+      border-top: 1px solid #EEF0F3;
+      padding: 24px 40px;
+      border-radius: 0;
+    }
+    .support p {
+      font-size: 14px;
+      color: #6B7280;
+      line-height: 1.7;
+      text-align: center;
+    }
+    .support a {
+      color: #4A9A28;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      background-color: #1E2B4A;
+      border-radius: 0 0 20px 20px;
+      padding: 24px 40px;
+      text-align: center;
+    }
+    .footer p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.8;
+    }
+    .footer a {
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+    }
+    .footer-divider {
+      width: 40px;
+      height: 2px;
+      background: #79C04E;
+      margin: 0 auto 16px;
+      border-radius: 2px;
+    }
+
+    @media only screen and (max-width: 640px) {
+      .wrapper { margin: 24px auto; }
+      .header, .hero, .body, .support, .footer { padding-left: 24px; padding-right: 24px; }
+      .hero h1 { font-size: 26px; }
+      .ref-box .ref-number { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <!-- HEADER -->
+    <div class="header">
+      <a href="#">
+        <img src="https://greenslistmedia.s3.amazonaws.com/Barrister/co-logo.png" alt="Greens List">
+      </a>
+      <span class="header-badge">Onboarding</span>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+      <p class="hero-label">Registration Confirmed</p>
+      <h1>Welcome to the<br><span>Onboarding Portal</span></h1>
+      <p>You have been successfully registered. Here's everything you need to get started on your journey.</p>
+    </div>
+
+    <!-- BODY -->
+    <div class="body">
+      <p class="intro">Congratulations! You have been successfully registered on our <strong>Onboarding Portal</strong>. We're excited to have you on board and look forward to supporting you through the process.</p>
+
+      <!-- REFERENCE NUMBER -->
+      <div class="ref-box">
+        <p class="ref-label">Your Reference Number</p>
+        <p class="ref-number">ReferenceNumber__c</p>
+        <p class="ref-note">Use this reference number to <strong>log in</strong> and begin submitting your details on the portal. Please keep it safe.</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- STEPS -->
+      <p class="steps-title">Get started in 3 steps</p>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <p class="step-heading">Visit the portal</p>
+          <p class="step-body">Navigate to our Onboarding Portal at </p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <p class="step-heading">Log in with your reference number</p>
+          <p class="step-body">Use the reference number above to access your onboarding account.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <p class="step-heading">Submit your details</p>
+          <p class="step-body">Complete all required sections to finalise your onboarding successfully.</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-wrap">
+        <a href="https://www.greenslist.com.au/s/" class="cta-btn">Go to Onboarding Portal</a>
+        <p class="cta-sub">You'll be prompted to enter your reference number on sign-in.</p>
+      </div>
+    </div>
+
+    <!-- SUPPORT -->
+    <div class="support">
+      <p>Need help? Reach us at <a href="mailto:support@greenslist.com.au">support@greenslist.com.au</a> or call <a href="tel:0392257222">03 9225 7222</a>.<br>We're committed to making your onboarding as smooth as possible.</p>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="footer-divider"></div>
+      <p>
+        Greens List Barristers<br>
+        205 William Street, Melbourne Victoria 3000<br>
+        Phone: (03) 9225 7222 &nbsp;|&nbsp; <a href="https://www.greenslist.com.au/s/">www.greenslist.com.au</a>
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>
