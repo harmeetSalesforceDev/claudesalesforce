@@ -12,12 +12,7 @@ mermaid.initialize({
     lineColor: dark ? '#9c9a92' : '#73726c', textColor: dark ? '#c2c0b6' : '#3d3d3a' },
 });
 const diagram = `erDiagram
-  Account {
-    text Name
-    text BillingAddress
-    text ShippingAddress
-    text Website
-  }
+  
   Contact {
     text FirstName
     text LastName
@@ -30,6 +25,12 @@ const diagram = `erDiagram
     text SAP_Customer_ID__c
     text CRM_ID__c
     text VAT_Number__c
+  }
+  Account {
+    text Name
+    text BillingAddress
+    text ShippingAddress
+    text Website
   }
   Onboarding_Application__c {
     lookup Contact__c
