@@ -86,8 +86,8 @@ const diagram = `erDiagram
     date Assigned_Date__c
   }
   Account ||--o{ Contact : "has"
-  Account ||--o{ Onboarding_Application__c : "triggers"
-  Account ||--o| KAM_Assignment__c : "assigned"
+  Contact ||--o{ Onboarding_Application__c : "triggers"
+  Contact ||--o| KAM_Assignment__c : "assigned"
   Onboarding_Application__c ||--o{ Policy_Acceptance__c : "records"
   Onboarding_Application__c ||--o| NDA__c : "has"
   Onboarding_Application__c ||--o| KYC_Record__c : "has"
