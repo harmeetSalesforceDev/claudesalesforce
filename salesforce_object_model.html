@@ -18,12 +18,7 @@ const diagram = `erDiagram
     text ShippingAddress
     text Website
     text VAT_Number__c
-    picklist Business_Segment__c
-    picklist Customer_Category__c
-    picklist Onboarding_Status__c
-    picklist Y_Hold_Status__c
-    text SAP_Customer_ID__c
-    text CRM_ID__c
+    
   }
   Contact {
     text FirstName
@@ -31,6 +26,12 @@ const diagram = `erDiagram
     text Email
     text Phone
     checkbox Is_Primary__c
+    picklist Business_Segment__c
+    picklist Customer_Category__c
+    picklist Onboarding_Status__c
+    picklist Y_Hold_Status__c
+    text SAP_Customer_ID__c
+    text CRM_ID__c
   }
   Onboarding_Application__c {
     lookup Account__c
