@@ -1,0 +1,115 @@
+
+<div id="erd2"></div>
+<style>#erd2 svg { width: 100%; } #erd2 { padding: 1rem 0; }</style>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false, theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: { darkMode: dark, fontSize: '12px', fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c', textColor: dark ? '#c2c0b6' : '#3d3d3a' },
+});
+const diagram = `erDiagram
+  Account {
+    text Name
+    text BillingAddress
+    text ShippingAddress
+    text Website
+    text VAT_Number__c
+    picklist Business_Segment__c
+    picklist Customer_Category__c
+    picklist Onboarding_Status__c
+    picklist Y_Hold_Status__c
+    text SAP_Customer_ID__c
+    text CRM_ID__c
+  }
+  Contact {
+    text FirstName
+    text LastName
+    text Email
+    text Phone
+    checkbox Is_Primary__c
+  }
+  Onboarding_Application__c {
+    lookup Account__c
+    picklist Status__c
+    picklist Product_Type__c
+    date Submission_Date__c
+    text Rejection_Reason__c
+  }
+  Policy_Acceptance__c {
+    lookup Onboarding_Application__c
+    picklist Policy_Type__c
+    checkbox Accepted__c
+    datetime Accepted_At__c
+    text IP_Address__c
+  }
+  NDA__c {
+    lookup Onboarding_Application__c
+    picklist Status__c
+    checkbox Amendment_Requested__c
+    lookup Approved_By__c
+    date Approval_Date__c
+  }
+  KYC_Record__c {
+    lookup Onboarding_Application__c
+    picklist Verification_Status__c
+    lookup Verified_By__c
+    textarea Notes__c
+    date Verified_At__c
+  }
+  Onboarding_Document__c {
+    lookup Onboarding_Application__c
+    picklist Document_Type__c
+    picklist Verification_Status__c
+    url File_URL__c
+    lookup Verified_By__c
+  }
+  Agreement__c {
+    lookup Onboarding_Application__c
+    picklist Agreement_Type__c
+    picklist Status__c
+    lookup Approved_By__c
+    date Signed_Date__c
+  }
+  Site_Visit__c {
+    lookup Onboarding_Application__c
+    picklist Status__c
+    text Inspector_Name__c
+    date Visit_Date__c
+    textarea Report_Notes__c
+  }
+  KAM_Assignment__c {
+    lookup Account__c
+    lookup KAM_User__c
+    date Assigned_Date__c
+  }
+  Account ||--o{ Contact : "has"
+  Account ||--o{ Onboarding_Application__c : "triggers"
+  Account ||--o| KAM_Assignment__c : "assigned"
+  Onboarding_Application__c ||--o{ Policy_Acceptance__c : "records"
+  Onboarding_Application__c ||--o| NDA__c : "has"
+  Onboarding_Application__c ||--o| KYC_Record__c : "has"
+  Onboarding_Application__c ||--o{ Onboarding_Document__c : "contains"
+  Onboarding_Application__c ||--o{ Agreement__c : "executes"
+  Onboarding_Application__c ||--o| Site_Visit__c : "requires"
+`;
+const { svg } = await mermaid.render('sf-erd-svg', diagram);
+document.getElementById('erd2').innerHTML = svg;
+document.querySelectorAll('#erd2 svg .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0],nums[2],nums[4],nums[6]], ys = [nums[1],nums[3],nums[5],nums[7]];
+  const x=Math.min(...xs),y=Math.min(...ys),w=Math.max(...xs)-x,h=Math.max(...ys)-y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  rect.setAttribute('x',x);rect.setAttribute('y',y);rect.setAttribute('width',w);rect.setAttribute('height',h);rect.setAttribute('rx','8');
+  for(const a of['fill','stroke','stroke-width','class','style']){if(firstPath.hasAttribute(a))rect.setAttribute(a,firstPath.getAttribute(a));}
+  firstPath.replaceWith(rect);
+});
+document.querySelectorAll('#erd2 svg .row-rect-odd path, #erd2 svg .row-rect-even path').forEach(p=>p.setAttribute('stroke','none'));
+</script>
