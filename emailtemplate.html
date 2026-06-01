@@ -1,0 +1,71 @@
+<html>
+	<head>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+			<title>Mailer</title>
+			<style type="text/css"> *{font-family: \'Roboto\', sans-serif; }@media only screen and (max-width: 767px) { .main-table-bx{width:95% !important;} .header-box img{height:50px;} .rest-btn{padding:30px 0px 60px 0px !important;} .content-box{padding:25px 15px !important;} } </style>
+		</head>
+		<body style="margin:0px;padding:0px;background-color:#EBEBEB; font-family: "Roboto", sans-serif;">
+			<table align="center" cellpadding="0" cellspacing="0" class="main-table-bx" style="font-family: "Roboto", sans-serif; font-size:16px;padding-top:50px;" width="650">
+				<thead>
+					<tr>
+						<th style="background-color:#324064;padding:25px;text-align:center;" class="header-box">
+							<a href="#">
+								<img src="https://greenslistmedia.s3.amazonaws.com/Barrister/co-logo.png" style="display:block;text-decoration:none;max-width:100%;margin:0 auto;">
+								</a>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td style="background-color:#fff; padding:50px 25px;border-bottom:3px solid #79C04E; box-sizing:border-box;" class="content-box">
+								<table align="center" cellpadding="0" cellspacing="0" width="100%">
+									<tbody>
+										<tr>
+											<td style="font-size:16px;padding:0px 0px 15px 0px; color:#424344;">
+												<strong>Dear memObj.Name__c, </strong>
+											</td>
+										</tr>
+										<tr>
+											<td style="font-size:16px; color:#424344; font-weight:400; padding:0px 0px 30px 0px;">Thank you for subscribing to our Online CPD Library! Your account is now active.</td>
+										</tr>
+										<tr>
+											<td style="font-size:16px; color:#424344; font-weight:400; padding:0px 0px 30px 0px;">To access the library content please log in via the link below with the following username: 
+												<a href="#" style="font-size:16px; color:#79C04E; font-weight:500; text-decoration:none;">memObj.Email__c</a>
+											</td>
+										</tr>
+										<!--<tr><td style="padding:0px 0px 30px 0px;" class="rest-btn"><a href="'+GL_SiteUrl+'/s/GLlogin?email='+memObj.Email__c+'"style="color: #79c14f; text-decoration: none; font-weight: 500;">Verify Email</a></td></tr>-->
+										<tr>
+											<td style="font-size:16px; color:#424344; font-weight:400; padding:0px 0px 30px 0px; "> Your membership will 
+												<strong style="color: #424344; font-weight: 500;">expire on </strong>  member_expiredate. 
+											</td>
+										</tr>
+										<tr>
+											<td style="font-size:16px; color:#424344; font-weight:400;"> If you require futher information please contact us on 
+												<strong style="font-weight: 500; color:#79C04E;">(03) 9225 7222</strong>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td style="" class="footer-inner">
+								<table align="center" cellpadding="0" cellspacing="0" width="100%">
+									<tbody>
+										<tr>
+											<td style="padding:0px; font-size:12px; text-align:center; padding:20px; font-weight:400; color:#9A9A9A;"> Greens List Barristers
+												<br/>| 205 William Street, Melbourne Victoria 3000 |
+												<br/>Phone: (03) 9225 7222 | Website: 
+												<a href="'+GL_SiteUrl+'/s/" >Greens List Site</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</body>
+		</html>
