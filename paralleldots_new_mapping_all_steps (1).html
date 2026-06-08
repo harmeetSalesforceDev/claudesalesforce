@@ -1,0 +1,605 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .wrap { display: flex; flex-direction: column; gap: 52px; padding: 2rem 0; font-family: 'DM Sans', var(--font-sans), sans-serif; }
+  .screen-label { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .screen-frame { background: #f4f3f0; border-radius: 16px; padding: 28px; border: 0.5px solid var(--color-border-tertiary); }
+  .page-body { background: #fff; border-radius: 0 0 12px 12px; overflow: hidden; }
+
+  /* STEPPER */
+  .stepper { background: #E8521A; padding: 18px 28px; display: flex; align-items: center; border-radius: 12px 12px 0 0; }
+  .step-item { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; position: relative; }
+  .step-item:last-child { flex: 0; }
+  .step-circle { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+  .step-circle.active { background: #fff; color: #E8521A; }
+  .step-circle.done { background: #fff; color: #E8521A; }
+  .step-circle.inactive { background: rgba(255,255,255,0.25); color: rgba(255,255,255,0.7); border: 1.5px solid rgba(255,255,255,0.4); }
+  .step-text { text-align: center; }
+  .step-name { font-size: 12px; font-weight: 600; color: #fff; }
+  .step-name.inactive { color: rgba(255,255,255,0.6); font-weight: 400; }
+  .step-sub { font-size: 10px; color: rgba(255,255,255,0.7); margin-top: 1px; }
+  .step-sub.inactive { color: rgba(255,255,255,0.45); }
+  .step-line { flex: 1; height: 1.5px; background: rgba(255,255,255,0.3); margin: 0 10px; margin-bottom: 18px; }
+  .step-line.done { background: rgba(255,255,255,0.8); }
+
+  /* CONTENT */
+  .content { padding: 22px 24px 28px; }
+  .intro-bar { background: #fff8f5; border: 0.5px solid #fde0d0; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #9a4422; display: flex; gap: 8px; align-items: flex-start; margin-bottom: 20px; }
+  .intro-bar i { font-size: 15px; color: #E8521A; flex-shrink: 0; margin-top: 1px; }
+
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px; }
+  .section-title { font-size: 16px; font-weight: 700; color: #1a1a1a; }
+  .section-sub { font-size: 12px; color: #888; margin-top: 3px; }
+
+  /* Entity mode toggle */
+  .mode-toggle { display: flex; gap: 10px; margin-bottom: 20px; }
+  .mode-opt { flex: 1; border: 1.5px solid #e2e1de; border-radius: 10px; padding: 12px 14px; cursor: pointer; display: flex; align-items: flex-start; gap: 10px; }
+  .mode-opt.selected { border-color: #E8521A; background: #fff8f5; }
+  .mode-radio { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #e2e1de; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; }
+  .mode-radio.sel { border-color: #E8521A; }
+  .mode-radio.sel::after { content:''; width:8px; height:8px; border-radius:50%; background:#E8521A; }
+  .mode-label { font-size: 13px; font-weight: 500; color: #1a1a1a; }
+  .mode-desc { font-size: 11.5px; color: #888; margin-top: 2px; }
+
+  /* Object selector boxes */
+  .obj-row { display: flex; align-items: stretch; gap: 0; margin-bottom: 16px; }
+  .obj-box { flex: 1; background: #f9f8f6; border: 1px solid #e2e1de; border-radius: 10px; padding: 14px 16px; }
+  .obj-label { font-size: 10px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.07em; display: flex; align-items: center; gap: 5px; margin-bottom: 10px; }
+  .obj-label i { font-size: 14px; }
+  .obj-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .obj-icon.sf { background: #fce8ea; }
+  .obj-icon.sw { background: #ede8ff; }
+  .obj-icon.sf i { color: #e8345a; font-size: 12px; }
+  .obj-icon.sw i { color: #7c3aed; font-size: 12px; }
+  .inp-search { width: 100%; height: 36px; border: 1px solid #e2e1de; border-radius: 7px; padding: 0 12px 0 32px; font-size: 12.5px; background: #fff; color: var(--color-text-primary); position: relative; }
+  .inp-wrap { position: relative; }
+  .inp-wrap i.search-ico { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 14px; color: #bbb; pointer-events: none; }
+  .sel-inp { width: 100%; height: 36px; border: 1px solid #e2e1de; border-radius: 7px; padding: 0 12px; font-size: 12.5px; background: #fff; color: var(--color-text-secondary); }
+
+  .connector { display: flex; align-items: center; justify-content: center; padding: 0 14px; }
+  .connector-icon { width: 32px; height: 32px; background: #fff; border: 1px solid #e2e1de; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .connector-icon i { font-size: 15px; color: #E8521A; }
+
+  .desc-panel { background: #f0f4ff; border: 0.5px solid #c7d6f8; border-radius: 8px; padding: 12px 14px; margin-top: 12px; }
+  .desc-panel-title { font-size: 11.5px; font-weight: 600; color: #2d4a9a; display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+  .desc-panel p { font-size: 11.5px; color: #4a6bd4; line-height: 1.5; }
+  .desc-panel .suggest { margin-top: 6px; font-size: 11px; color: #4a6bd4; }
+  .desc-panel .suggest strong { color: #2d4a9a; }
+
+  .custom-callout { background: #f5f3ff; border: 0.5px solid #ddd6fe; border-radius: 8px; padding: 11px 14px; display: flex; gap: 10px; align-items: flex-start; margin-bottom: 16px; }
+  .custom-callout i { font-size: 15px; color: #7c3aed; flex-shrink: 0; margin-top: 1px; }
+  .custom-callout p { font-size: 11.5px; color: #5b21b6; line-height: 1.5; }
+
+  .footer-row { display: flex; justify-content: flex-end; gap: 10px; padding-top: 12px; border-top: 0.5px solid #eee; margin-top: 4px; }
+  .btn-next { height: 36px; padding: 0 20px; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; background: #E8521A; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .btn-prev { height: 36px; padding: 0 16px; border: 1px solid #e2e1de; border-radius: 8px; font-size: 13px; background: #fff; color: #666; cursor: pointer; }
+
+  /* Step 2 — Field Mapping */
+  .mapping-header { display: flex; align-items: flex-start; justify-content: space-between; background: #f9f8f6; padding: 14px 18px; border-bottom: 0.5px solid #eee; }
+  .mapping-header-left h2 { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .mapping-header-left p { font-size: 11.5px; color: #888; margin-top: 3px; }
+  .existing-badge { display: flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 6px; background: #eef7ef; border: 0.5px solid #b6deba; font-size: 11.5px; color: #2a7a3b; font-weight: 500; }
+  .existing-badge i { font-size: 13px; }
+
+  .progress-counter { display: flex; align-items: center; justify-content: space-between; padding: 10px 18px; background: #fff; border-bottom: 0.5px solid #eee; }
+  .prog-text { font-size: 12px; color: #888; }
+  .prog-text strong { color: #E8521A; }
+  .prog-bar-wrap { width: 160px; height: 5px; background: #eee; border-radius: 3px; overflow: hidden; }
+  .prog-bar-fill { height: 100%; background: #E8521A; border-radius: 3px; width: 25%; }
+  .map-all-label { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #666; cursor: pointer; }
+  .map-all-label i { font-size: 14px; color: #7c3aed; }
+
+  .fields-header { display: flex; align-items: center; padding: 8px 18px; border-bottom: 0.5px solid #eee; background: #fafaf9; }
+  .fh-sf { flex: 1; display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.06em; }
+  .fh-sf .icon { width: 18px; height: 18px; border-radius: 50%; background: #fce8ea; display: flex; align-items: center; justify-content: center; }
+  .fh-sf .icon i { font-size: 10px; color: #e8345a; }
+  .fh-arrow { width: 60px; display: flex; justify-content: center; }
+  .fh-sw { flex: 1; display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.06em; }
+  .fh-sw .icon { width: 18px; height: 18px; border-radius: 50%; background: #ede8ff; display: flex; align-items: center; justify-content: center; }
+  .fh-sw .icon i { font-size: 10px; color: #7c3aed; }
+  .fh-sw-text { display: flex; align-items: center; gap: 6px; }
+
+  .field-row { display: flex; align-items: center; padding: 9px 18px; border-bottom: 0.5px solid #f4f3f0; }
+  .field-row:hover { background: #fdfcfb; }
+  .sf-field { flex: 1; display: flex; align-items: center; gap: 8px; }
+  .sf-tag { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 6px; border: 0.5px solid #e2e1de; background: #fff; font-size: 12px; color: #333; }
+  .sf-tag.required { border-color: #E8521A; background: #fff8f5; }
+  .req-dot { width: 5px; height: 5px; border-radius: 50%; background: #E8521A; }
+  .req-label { font-size: 10px; color: #E8521A; font-weight: 500; }
+  .arrow-col { width: 60px; display: flex; justify-content: center; }
+  .arrow-col i { font-size: 16px; color: #ccc; }
+  .sw-field { flex: 1; }
+  .sw-sel { width: 100%; height: 30px; border: 1px solid #e2e1de; border-radius: 6px; padding: 0 10px; font-size: 12px; background: #fafaf9; color: var(--color-text-secondary); }
+  .sw-sel.mapped { border-color: #2da84d; background: #eef7ef; color: #2a7a3b; }
+
+  /* Step 3 — Save */
+  .review-card { background: #f9f8f6; border-radius: 10px; border: 0.5px solid #e8e7e3; overflow: hidden; margin-bottom: 16px; }
+  .review-card-head { padding: 12px 16px; border-bottom: 0.5px solid #e8e7e3; display: flex; align-items: center; gap: 8px; }
+  .review-card-head h3 { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+  .review-card-head i { font-size: 16px; color: #E8521A; }
+  .review-card-body { padding: 14px 16px; }
+
+  .name-field-wrap { margin-bottom: 16px; }
+  .name-field-wrap label { font-size: 11px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 5px; }
+  .name-inp { width: 100%; height: 36px; border: 1px solid #e2e1de; border-radius: 7px; padding: 0 12px; font-size: 13px; background: #fff; color: var(--color-text-primary); }
+
+  .obj-chips { display: flex; gap: 10px; }
+  .obj-chip { display: flex; align-items: center; gap: 7px; padding: 5px 12px; border-radius: 8px; border: 0.5px solid #e2e1de; background: #fff; font-size: 12.5px; }
+  .obj-chip i.check { color: #2da84d; font-size: 14px; }
+
+  .map-summary-table { width: 100%; border-collapse: collapse; }
+  .map-summary-table th { font-size: 10.5px; font-weight: 500; color: #aaa; text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 0; text-align: left; }
+  .map-summary-table td { font-size: 12.5px; color: #333; padding: 7px 0; border-top: 0.5px solid #f2f1ee; }
+  .sf-val { color: #e8345a; font-weight: 500; }
+  .sw-val { color: #7c3aed; font-weight: 500; }
+  .unmapped-note { font-size: 11.5px; color: #aaa; margin-top: 8px; display: flex; align-items: center; gap: 5px; }
+  .unmapped-note i { font-size: 13px; color: #d4880a; }
+
+  .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .s-stat { background: #fff; border-radius: 7px; border: 0.5px solid #e2e1de; padding: 10px 14px; display: flex; align-items: center; gap: 8px; }
+  .s-stat i { font-size: 18px; }
+  .s-stat-label { font-size: 10.5px; color: #aaa; text-transform: uppercase; letter-spacing: 0.04em; }
+  .s-stat-val { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+
+  .save-cta-row { display: flex; gap: 10px; justify-content: flex-end; padding-top: 14px; border-top: 0.5px solid #eee; }
+  .btn-save { height: 38px; padding: 0 22px; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; background: #E8521A; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .btn-save-sync { height: 38px; padding: 0 18px; border: 1.5px solid #E8521A; border-radius: 8px; font-size: 13px; font-weight: 500; background: #fff; color: #E8521A; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+
+  /* Step 3 success */
+  .success-panel { padding: 40px 24px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .success-circle { width: 56px; height: 56px; border-radius: 50%; background: #eef7ef; border: 2px solid #b6deba; display: flex; align-items: center; justify-content: center; }
+  .success-circle i { font-size: 26px; color: #2da84d; }
+  .success-title { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+  .success-sub { font-size: 12.5px; color: #888; text-align: center; max-width: 340px; line-height: 1.6; }
+  .btn-go-mapping { height: 36px; padding: 0 18px; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; background: #E8521A; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+
+  .tooltip-wrap { display: inline-flex; align-items: center; gap: 4px; }
+  .tip-i { font-size: 12px; color: #ccc; cursor: help; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+
+<div class="wrap">
+
+  <!-- ═══════════════════════════════════════════ STEP 1 ═══ -->
+  <div>
+    <div class="screen-label">Step 1 — Select Object</div>
+    <div class="screen-frame">
+      <div class="stepper">
+        <div class="step-item">
+          <div class="step-circle active">1</div>
+          <div class="step-text">
+            <div class="step-name">Select Object</div>
+            <div class="step-sub">Choose SF & SW objects</div>
+          </div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item">
+          <div class="step-circle inactive">2</div>
+          <div class="step-text">
+            <div class="step-name inactive">Select & Map Fields</div>
+            <div class="step-sub inactive">Map fields between systems</div>
+          </div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item">
+          <div class="step-circle inactive">3</div>
+          <div class="step-text">
+            <div class="step-name inactive">Save</div>
+            <div class="step-sub inactive">Review & confirm mapping</div>
+          </div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="content">
+
+          <!-- Intro bar -->
+          <div class="intro-bar">
+            <i class="ti ti-info-circle" aria-hidden="true"></i>
+            <span>Map your Salesforce objects to Shelfwatch entities to start syncing data. Select the Shelfwatch object first, then choose the matching Salesforce object.</span>
+          </div>
+
+          <!-- Section title -->
+          <div class="section-head">
+            <div>
+              <div class="section-title">Object Mapping</div>
+              <div class="section-sub">Configure Salesforce ↔ Shelfwatch object relationships</div>
+            </div>
+          </div>
+
+          <!-- Entity mode toggle -->
+          <div class="mode-toggle">
+            <div class="mode-opt selected">
+              <div class="mode-radio sel"></div>
+              <div>
+                <div class="mode-label">Existing Entity</div>
+                <div class="mode-desc">Map to a Shelfwatch entity already in use (Stores, Users, Route Plan, etc.)</div>
+              </div>
+            </div>
+            <div class="mode-opt">
+              <div class="mode-radio"></div>
+              <div>
+                <div class="mode-label">New Entity</div>
+                <div class="mode-desc">Create a fresh Shelfwatch entity from scratch using a custom object</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Object selector row -->
+          <div class="obj-row">
+            <div class="obj-box">
+              <div class="obj-label">
+                <div class="obj-icon sf"><i class="ti ti-link" aria-hidden="true"></i></div>
+                Salesforce Object
+              </div>
+              <div class="inp-wrap">
+                <i class="ti ti-search search-ico" aria-hidden="true"></i>
+                <input class="inp-search" type="text" placeholder="Search and select a Salesforce object…">
+              </div>
+            </div>
+
+            <div class="connector">
+              <div class="connector-icon"><i class="ti ti-arrows-left-right" aria-hidden="true"></i></div>
+            </div>
+
+            <div class="obj-box">
+              <div class="obj-label">
+                <div class="obj-icon sw"><i class="ti ti-building-store" aria-hidden="true"></i></div>
+                <span class="tooltip-wrap">
+                  Shelfwatch Object
+                  <i class="ti ti-info-circle tip-i" aria-label="Stores: Sync retail store/outlet data. Users: Sync field agents. Route Plan: Sync visit schedules. Assortment List: Sync product assortment. SKU Master: Sync product catalogue."></i>
+                </span>
+              </div>
+              <select class="sel-inp">
+                <option value="">Select Shelfwatch object…</option>
+                <option>🏪 Stores — Retail store/outlet master data</option>
+                <option>👤 Users — Field agents and area managers</option>
+                <option>🗺️ Route Plan — Visit schedules and routes</option>
+                <option>📋 Assortment List — Product assortment per store</option>
+                <option>📦 SKU Master — Product/SKU catalogue</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Dynamic description panel (shown after selection) -->
+          <div class="desc-panel" style="margin-bottom:16px;">
+            <div class="desc-panel-title"><i class="ti ti-building-store" aria-hidden="true"></i> Stores — selected</div>
+            <p>Sync your retail store and outlet master data from Salesforce into Shelfwatch. Typically mapped to the <strong>Account</strong> object in Salesforce.</p>
+            <div class="suggest">💡 <strong>Suggested Salesforce object:</strong> Account</div>
+          </div>
+
+          <!-- Custom object callout -->
+          <div class="custom-callout">
+            <i class="ti ti-sparkles" aria-hidden="true"></i>
+            <p><strong>Have fields outside standard objects?</strong> Use Custom Object mode to send any Salesforce field directly to Shelfwatch without field-level mapping. Switch to "New Entity" above to enable this.</p>
+          </div>
+
+          <div class="footer-row">
+            <button class="btn-next">Next <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ STEP 2 ═══ -->
+  <div>
+    <div class="screen-label">Step 2 — Select & Map Fields</div>
+    <div class="screen-frame">
+      <div class="stepper">
+        <div class="step-item">
+          <div class="step-circle done"><i class="ti ti-check" style="font-size:14px;" aria-hidden="true"></i></div>
+          <div class="step-text">
+            <div class="step-name">Select Object</div>
+            <div class="step-sub">Choose SF & SW objects</div>
+          </div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step-item">
+          <div class="step-circle active">2</div>
+          <div class="step-text">
+            <div class="step-name">Select & Map Fields</div>
+            <div class="step-sub">Map fields between systems</div>
+          </div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item">
+          <div class="step-circle inactive">3</div>
+          <div class="step-text">
+            <div class="step-name inactive">Save</div>
+            <div class="step-sub inactive">Review & confirm mapping</div>
+          </div>
+        </div>
+      </div>
+      <div class="page-body">
+
+        <!-- Mapping header -->
+        <div class="mapping-header">
+          <div class="mapping-header-left">
+            <h2>Field Mapping: Account → Stores</h2>
+            <p>Salesforce Object: <strong>Account</strong> &nbsp;·&nbsp; Shelfwatch Object: <strong>stores</strong></p>
+          </div>
+          <div class="existing-badge"><i class="ti ti-circle-check" aria-hidden="true"></i> Existing Object Mode</div>
+        </div>
+
+        <!-- Progress counter -->
+        <div class="progress-counter">
+          <div>
+            <span class="prog-text">Fields mapped: <strong>3 of 12</strong></span>
+            &nbsp;&nbsp;
+            <span style="font-size:11.5px;color:#d4880a;"><i class="ti ti-alert-triangle" style="font-size:12px;vertical-align:-2px;" aria-hidden="true"></i> 2 required fields unmapped</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="prog-bar-wrap"><div class="prog-bar-fill"></div></div>
+            <label class="map-all-label">
+              <input type="checkbox" style="accent-color:#7c3aed;">
+              <i class="ti ti-sparkles" aria-hidden="true"></i>
+              <span class="tooltip-wrap">Map All as Custom <i class="ti ti-info-circle tip-i" aria-label="Sends all Salesforce fields as custom attributes to Shelfwatch without explicit field mapping. Useful when field names match or you want to skip manual mapping."></i></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Fields header -->
+        <div class="fields-header">
+          <div class="fh-sf">
+            <div class="icon"><i class="ti ti-link" aria-hidden="true"></i></div>
+            Salesforce Fields
+          </div>
+          <div class="fh-arrow"></div>
+          <div class="fh-sw">
+            <div class="fh-sw-text">
+              <div class="icon"><i class="ti ti-building-store" aria-hidden="true"></i></div>
+              <span class="tooltip-wrap">
+                Shelfwatch Fields
+                <i class="ti ti-info-circle tip-i" aria-label="Select the corresponding Shelfwatch field for each Salesforce field. Required fields must be mapped before proceeding."></i>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Field rows -->
+        <div class="field-row">
+          <div class="sf-field">
+            <div class="sf-tag required"><span class="req-dot"></span>Account Name <span class="req-label">Required</span></div>
+          </div>
+          <div class="arrow-col"><i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+          <div class="sw-field">
+            <select class="sw-sel mapped"><option>store_name ✓</option></select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="sf-field">
+            <div class="sf-tag required"><span class="req-dot"></span>Account Number <span class="req-label">Required</span></div>
+          </div>
+          <div class="arrow-col"><i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+          <div class="sw-field">
+            <select class="sw-sel" style="border-color:#d44030;background:#fdf0ef;color:#b83a2e;"><option>— Not mapped (required) —</option></select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="sf-field">
+            <div class="sf-tag">Account Description</div>
+          </div>
+          <div class="arrow-col"><i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+          <div class="sw-field">
+            <select class="sw-sel mapped"><option>description ✓</option></select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="sf-field">
+            <div class="sf-tag">Billing City</div>
+          </div>
+          <div class="arrow-col"><i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+          <div class="sw-field">
+            <select class="sw-sel mapped"><option>city ✓</option></select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="sf-field">
+            <div class="sf-tag">Account Fax</div>
+          </div>
+          <div class="arrow-col"><i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+          <div class="sw-field">
+            <select class="sw-sel"><option>Select Shelfwatch field…</option></select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="sf-field">
+            <div class="sf-tag">Account Phone</div>
+          </div>
+          <div class="arrow-col"><i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+          <div class="sw-field">
+            <select class="sw-sel"><option>Select Shelfwatch field…</option></select>
+          </div>
+        </div>
+
+        <div style="padding:14px 18px;border-top:0.5px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+          <button class="btn-prev">← Previous</button>
+          <button class="btn-next">Next <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ STEP 3 ═══ -->
+  <div>
+    <div class="screen-label">Step 3 — Save (Review & Confirm)</div>
+    <div class="screen-frame">
+      <div class="stepper">
+        <div class="step-item">
+          <div class="step-circle done"><i class="ti ti-check" style="font-size:14px;" aria-hidden="true"></i></div>
+          <div class="step-text">
+            <div class="step-name">Select Object</div>
+            <div class="step-sub">Choose SF & SW objects</div>
+          </div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step-item">
+          <div class="step-circle done"><i class="ti ti-check" style="font-size:14px;" aria-hidden="true"></i></div>
+          <div class="step-text">
+            <div class="step-name">Select & Map Fields</div>
+            <div class="step-sub">Map fields between systems</div>
+          </div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step-item">
+          <div class="step-circle active">3</div>
+          <div class="step-text">
+            <div class="step-name">Save</div>
+            <div class="step-sub">Review & confirm mapping</div>
+          </div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="content">
+
+          <!-- Mapping name -->
+          <div class="review-card">
+            <div class="review-card-head">
+              <i class="ti ti-tag" aria-hidden="true"></i>
+              <h3>Mapping Name</h3>
+            </div>
+            <div class="review-card-body">
+              <div class="name-field-wrap">
+                <label>Give this mapping a name</label>
+                <input class="name-inp" type="text" placeholder="e.g. Account to Stores — APAC" value="Account to Stores — Main">
+              </div>
+            </div>
+          </div>
+
+          <!-- Selected objects -->
+          <div class="review-card">
+            <div class="review-card-head">
+              <i class="ti ti-arrows-left-right" aria-hidden="true"></i>
+              <h3>Selected Objects</h3>
+            </div>
+            <div class="review-card-body">
+              <div class="obj-chips">
+                <div class="obj-chip">
+                  <div class="obj-icon sf" style="width:18px;height:18px;"><i class="ti ti-link" style="font-size:10px;color:#e8345a;" aria-hidden="true"></i></div>
+                  <span style="font-size:12.5px;font-weight:500;">Account</span>
+                  <i class="ti ti-circle-check check" aria-hidden="true"></i>
+                </div>
+                <div style="display:flex;align-items:center;color:#bbb;font-size:14px;">↔</div>
+                <div class="obj-chip">
+                  <div class="obj-icon sw" style="width:18px;height:18px;"><i class="ti ti-building-store" style="font-size:10px;color:#7c3aed;" aria-hidden="true"></i></div>
+                  <span style="font-size:12.5px;font-weight:500;">stores</span>
+                  <i class="ti ti-circle-check check" aria-hidden="true"></i>
+                </div>
+              </div>
+
+              <div class="stat-row">
+                <div class="s-stat">
+                  <i class="ti ti-circle-check" style="color:#2da84d;" aria-hidden="true"></i>
+                  <div>
+                    <div class="s-stat-label">Mapped Fields</div>
+                    <div class="s-stat-val" style="color:#2a7a3b;">3</div>
+                  </div>
+                </div>
+                <div class="s-stat">
+                  <i class="ti ti-circle-x" style="color:#d44030;" aria-hidden="true"></i>
+                  <div>
+                    <div class="s-stat-label">Unmapped Fields</div>
+                    <div class="s-stat-val" style="color:#b83a2e;">57</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mapping summary table -->
+          <div class="review-card">
+            <div class="review-card-head">
+              <i class="ti ti-table" aria-hidden="true"></i>
+              <h3>Mapping Summary</h3>
+            </div>
+            <div class="review-card-body">
+              <table class="map-summary-table">
+                <thead>
+                  <tr>
+                    <th style="width:40%;">Salesforce Field</th>
+                    <th style="width:10%;text-align:center;"></th>
+                    <th>Shelfwatch Field</th>
+                    <th style="width:80px;">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="sf-val">Account Name</span> <span style="font-size:10px;background:#fff8f5;color:#E8521A;padding:1px 5px;border-radius:4px;border:0.5px solid #fde0d0;">Required</span></td>
+                    <td style="text-align:center;color:#aaa;">→</td>
+                    <td><span class="sw-val">store_name</span></td>
+                    <td><span style="font-size:11px;color:#2a7a3b;">✓ Mapped</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="sf-val">Account Number</span> <span style="font-size:10px;background:#fff8f5;color:#E8521A;padding:1px 5px;border-radius:4px;border:0.5px solid #fde0d0;">Required</span></td>
+                    <td style="text-align:center;color:#aaa;">→</td>
+                    <td style="color:#d44030;">— Not mapped</td>
+                    <td><span style="font-size:11px;color:#b83a2e;">✗ Missing</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="sf-val">Account Description</span></td>
+                    <td style="text-align:center;color:#aaa;">→</td>
+                    <td><span class="sw-val">description</span></td>
+                    <td><span style="font-size:11px;color:#2a7a3b;">✓ Mapped</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="sf-val">Billing City</span></td>
+                    <td style="text-align:center;color:#aaa;">→</td>
+                    <td><span class="sw-val">city</span></td>
+                    <td><span style="font-size:11px;color:#2a7a3b;">✓ Mapped</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="unmapped-note">
+                <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+                57 fields not mapped — they will not sync until mapped. <a href="#" style="color:#E8521A;font-size:11.5px;">Go back to map more →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="save-cta-row">
+            <button class="btn-prev">← Previous</button>
+            <button class="btn-save-sync"><i class="ti ti-player-play" aria-hidden="true"></i> Save & Sync Now</button>
+            <button class="btn-save"><i class="ti ti-device-floppy" aria-hidden="true"></i> Save Only</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SUCCESS ═══ -->
+  <div>
+    <div class="screen-label">Step 3 — Success State (after saving)</div>
+    <div class="screen-frame">
+      <div class="stepper">
+        <div class="step-item">
+          <div class="step-circle done"><i class="ti ti-check" style="font-size:14px;" aria-hidden="true"></i></div>
+          <div class="step-text"><div class="step-name">Select Object</div><div class="step-sub">Done</div></div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step-item">
+          <div class="step-circle done"><i class="ti ti-check" style="font-size:14px;" aria-hidden="true"></i></div>
+          <div class="step-text"><div class="step-name">Select & Map Fields</div><div class="step-sub">Done</div></div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step-item">
+          <div class="step-circle done"><i class="ti ti-check" style="font-size:14px;" aria-hidden="true"></i></div>
+          <div class="step-text"><div class="step-name">Save</div><div class="step-sub">Complete</div></div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="success-panel">
+          <div class="success-circle"><i class="ti ti-circle-check" aria-hidden="true"></i></div>
+          <div class="success-title">Mapping Saved Successfully!</div>
+          <div class="success-sub">"Account to Stores — Main" has been created. 3 fields mapped between <strong>Account</strong> and <strong>stores</strong>. You can now sync data or view the mapping in the Mapping tab.</div>
+          <div style="display:flex;gap:10px;margin-top:4px;">
+            <button class="btn-go-mapping"><i class="ti ti-layout-list" aria-hidden="true"></i> View in Mapping</button>
+            <button style="height:36px;padding:0 16px;border:1px solid #e2e1de;border-radius:8px;font-size:13px;background:#fff;color:#555;cursor:pointer;display:flex;align-items:center;gap:6px;"><i class="ti ti-plus" aria-hidden="true"></i> Add Another Mapping</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,329 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .wrap { display: flex; flex-direction: column; gap: 48px; padding: 2rem 0; font-family: 'DM Sans', var(--font-sans), sans-serif; }
+  .screen-label { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .screen-frame { background: #f4f3f0; border-radius: 16px; padding: 28px; border: 0.5px solid var(--color-border-tertiary); }
+  .topbar { background: #fff; border-bottom: 0.5px solid #e5e4e0; padding: 0 24px; height: 52px; display: flex; align-items: center; gap: 10px; border-radius: 12px 12px 0 0; }
+  .app-icon { width: 28px; height: 28px; background: #3B82F6; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .topbar-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .page-body { background: #fff; border-radius: 0 0 12px 12px; padding: 0; overflow: hidden; }
+
+  .guidance-banner { background: #fff8f5; border-bottom: 1px solid #fde0d0; padding: 10px 20px; display: flex; align-items: flex-start; gap: 10px; }
+  .guidance-banner i { color: #E8521A; font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+  .guidance-banner p { font-size: 12px; color: #9a4422; line-height: 1.5; }
+  .guidance-banner .dismiss { margin-left: auto; font-size: 11px; color: #E8521A; cursor: pointer; white-space: nowrap; padding-top: 1px; flex-shrink: 0; }
+
+  .toolbar { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-bottom: 0.5px solid #eee; }
+  .search-wrap { position: relative; flex: 1; max-width: 260px; }
+  .search-wrap i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 15px; color: #bbb; }
+  .search-inp { width: 100%; height: 34px; border: 1px solid #e2e1de; border-radius: 7px; padding: 0 10px 0 32px; font-size: 12.5px; background: #fafaf9; color: var(--color-text-primary); }
+  .filter-sel { height: 34px; border: 1px solid #e2e1de; border-radius: 7px; padding: 0 10px; font-size: 12.5px; background: #fafaf9; color: var(--color-text-secondary); }
+  .spacer { flex: 1; }
+  .btn-refresh { height: 34px; padding: 0 14px; border: 1px solid #e2e1de; border-radius: 7px; font-size: 12.5px; background: #fff; color: var(--color-text-secondary); cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .btn-refresh i { font-size: 14px; }
+  .btn-new { height: 34px; padding: 0 16px; border: none; border-radius: 7px; font-size: 12.5px; background: #E8521A; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 500; }
+  .btn-new i { font-size: 14px; }
+
+  .bulk-bar { display: flex; align-items: center; gap: 10px; padding: 8px 20px; background: #fff8f5; border-bottom: 0.5px solid #fde0d0; }
+  .bulk-bar span { font-size: 12px; color: #9a4422; font-weight: 500; }
+  .bulk-btn { height: 28px; padding: 0 12px; border: 1px solid #fde0d0; border-radius: 6px; font-size: 11.5px; background: #fff; color: #9a4422; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+  .bulk-btn.danger { color: #b83a2e; border-color: #f0b8b4; }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { border-bottom: 0.5px solid #eee; background: #fafaf9; }
+  th { padding: 10px 14px; font-size: 11px; font-weight: 500; color: #999; text-align: left; white-space: nowrap; }
+  th.check-col { width: 36px; padding: 10px 10px 10px 20px; }
+  td { padding: 12px 14px; font-size: 12.5px; color: var(--color-text-primary); border-bottom: 0.5px solid #f2f1ee; vertical-align: middle; }
+  td.check-col { padding: 12px 10px 12px 20px; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #fdfcfb; }
+
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 20px; font-size: 11.5px; font-weight: 500; }
+  .badge.red { background: #fdf0ef; color: #b83a2e; border: 0.5px solid #f0b8b4; }
+  .badge.green { background: #eef7ef; color: #2a7a3b; border: 0.5px solid #b6deba; }
+  .badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+
+  .pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 500; }
+  .pill.success { background: #eef7ef; color: #2a7a3b; border: 0.5px solid #b6deba; }
+  .pill.failed { background: #fdf0ef; color: #b83a2e; border: 0.5px solid #f0b8b4; }
+  .pill.pending { background: #fef9ec; color: #92600a; border: 0.5px solid #f5d98a; }
+  .pill.never { background: #f4f3f0; color: #888; border: 0.5px solid #e0ddd9; }
+  .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .pill-dot.g { background: #2da84d; }
+  .pill-dot.r { background: #d44030; }
+  .pill-dot.a { background: #d4880a; }
+  .pill-dot.gr { background: #bbb; }
+
+  .sync-time { font-size: 11px; color: #aaa; margin-top: 2px; }
+  .sync-time.green { color: #2a7a3b; }
+  .sync-time.amber { color: #92600a; }
+  .sync-time.red-t { color: #b83a2e; }
+
+  .icon-btn { width: 30px; height: 30px; border-radius: 6px; border: 0.5px solid #e2e1de; background: #fff; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+  .icon-btn i { font-size: 14px; color: #888; }
+  .icon-btn:hover { background: #f4f3f0; }
+  .icon-btn.blue i { color: #3B82F6; }
+  .icon-btn.red-btn i { color: #d44030; }
+  .icon-btn.orange i { color: #E8521A; }
+
+  .toggle { position: relative; width: 34px; height: 18px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: #e2e1de; border-radius: 18px; cursor: pointer; }
+  .slider:before { content: ''; position: absolute; width: 14px; height: 14px; border-radius: 50%; background: #fff; top: 2px; left: 2px; transition: 0.2s; }
+  input:checked + .slider { background: #E8521A; }
+  input:checked + .slider:before { transform: translateX(16px); }
+  .toggle-label { font-size: 10px; color: #aaa; margin-top: 3px; text-align: center; }
+
+  .tooltip-wrap { position: relative; display: inline-flex; align-items: center; gap: 4px; }
+  .tip-icon { font-size: 13px; color: #ccc; cursor: help; }
+
+  .play-btn { width: 30px; height: 30px; border-radius: 6px; border: 0.5px solid #fde0d0; background: #fff8f5; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+  .play-btn i { font-size: 13px; color: #E8521A; }
+
+  .empty-state { padding: 56px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .empty-icon { width: 48px; height: 48px; background: #f4f3f0; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+  .empty-icon i { font-size: 22px; color: #ccc; }
+  .empty-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .empty-sub { font-size: 12.5px; color: #aaa; text-align: center; max-width: 300px; line-height: 1.6; }
+  .btn-empty-new { margin-top: 4px; height: 36px; padding: 0 18px; border: none; border-radius: 8px; font-size: 13px; background: #E8521A; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 500; }
+
+  .pagination { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px 20px; border-top: 0.5px solid #eee; }
+  .pg-btn { height: 32px; padding: 0 14px; border: 1px solid #e2e1de; border-radius: 20px; font-size: 12.5px; background: #fff; color: var(--color-text-secondary); cursor: pointer; display: flex; align-items: center; gap: 5px; }
+  .pg-btn.disabled { opacity: 0.4; cursor: default; }
+  .pg-info { font-size: 12px; color: #aaa; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+
+<div class="wrap">
+
+  <!-- SCREEN 1: With records -->
+  <div>
+    <div class="screen-label">Screen 1 — Mapping page (with records)</div>
+    <div class="screen-frame">
+      <div class="topbar">
+        <div class="app-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="#fff"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#fff" opacity="0.7"/><rect x="2" y="9" width="5" height="5" rx="1" fill="#fff" opacity="0.7"/><rect x="9" y="9" width="5" height="5" rx="1" fill="#fff" opacity="0.4"/></svg>
+        </div>
+        <span class="topbar-title">Mapping</span>
+      </div>
+      <div class="page-body">
+
+        <!-- Guidance banner -->
+        <div class="guidance-banner">
+          <i class="ti ti-info-circle" aria-hidden="true"></i>
+          <p>This page shows all your active Salesforce ↔ Shelfwatch mappings. Use <strong>Sync Now</strong> to manually push data, or enable <strong>Auto Sync</strong> to keep data in sync automatically.</p>
+          <span class="dismiss">Dismiss ×</span>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="search-wrap">
+            <i class="ti ti-search" aria-hidden="true"></i>
+            <input class="search-inp" type="text" placeholder="Search mappings…">
+          </div>
+          <select class="filter-sel">
+            <option>All statuses</option>
+            <option>Success</option>
+            <option>Failed</option>
+            <option>Pending</option>
+            <option>Never Synced</option>
+          </select>
+          <div class="spacer"></div>
+          <button class="btn-refresh"><i class="ti ti-refresh" aria-hidden="true"></i> Refresh All Entities</button>
+          <button class="btn-new"><i class="ti ti-plus" aria-hidden="true"></i> New Mapping</button>
+        </div>
+
+        <!-- Bulk action bar -->
+        <div class="bulk-bar">
+          <span>2 selected</span>
+          <button class="bulk-btn"><i class="ti ti-player-play" aria-hidden="true"></i> Sync Selected</button>
+          <button class="bulk-btn danger"><i class="ti ti-trash" aria-hidden="true"></i> Delete Selected</button>
+        </div>
+
+        <!-- Table -->
+        <table>
+          <thead>
+            <tr>
+              <th class="check-col"><input type="checkbox"></th>
+              <th>Shelfwatch Entity</th>
+              <th>Salesforce Object</th>
+              <th>
+                <span class="tooltip-wrap">
+                  Unmapped Fields
+                  <i class="ti ti-info-circle tip-icon" aria-label="These are Shelfwatch fields that haven't been mapped to a Salesforce field yet. Click Edit to complete the mapping."></i>
+                </span>
+              </th>
+              <th>Last Sync</th>
+              <th>Sync Status</th>
+              <th>Sync Now</th>
+              <th>
+                <span class="tooltip-wrap">
+                  Auto Sync
+                  <i class="ti ti-info-circle tip-icon" aria-label="When enabled, data will sync automatically on the configured schedule."></i>
+                </span>
+              </th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="check-col"><input type="checkbox" checked></td>
+              <td>stores</td>
+              <td>Account</td>
+              <td>
+                <span class="badge red"><span class="badge-dot" style="background:#d44030;"></span>56</span>
+              </td>
+              <td>
+                <div>2 hours ago</div>
+                <div class="sync-time green">04/06/2026, 14:31</div>
+              </td>
+              <td><span class="pill success"><span class="pill-dot g"></span>Success</span></td>
+              <td>
+                <div style="display:flex;flex-direction:column;gap:3px;align-items:flex-start;">
+                  <button class="play-btn" aria-label="Sync now"><i class="ti ti-player-play" aria-hidden="true"></i></button>
+                  <div class="sync-time">Triggered 2h ago</div>
+                </div>
+              </td>
+              <td>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                  <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                  <div class="toggle-label">Active</div>
+                </div>
+              </td>
+              <td><button class="icon-btn blue" aria-label="Edit"><i class="ti ti-pencil"></i></button></td>
+              <td><button class="icon-btn red-btn" aria-label="Delete"><i class="ti ti-trash"></i></button></td>
+            </tr>
+            <tr>
+              <td class="check-col"><input type="checkbox" checked></td>
+              <td>products</td>
+              <td>Product2</td>
+              <td>
+                <span class="badge green"><span class="badge-dot" style="background:#2da84d;"></span>0</span>
+              </td>
+              <td>
+                <div style="color:#92600a;">3 days ago</div>
+                <div class="sync-time amber">02/06/2026, 09:15</div>
+              </td>
+              <td><span class="pill failed"><span class="pill-dot r"></span>Failed</span></td>
+              <td>
+                <div style="display:flex;flex-direction:column;gap:3px;align-items:flex-start;">
+                  <button class="play-btn" aria-label="Sync now"><i class="ti ti-player-play" aria-hidden="true"></i></button>
+                  <div class="sync-time">Triggered 3d ago</div>
+                </div>
+              </td>
+              <td>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                  <label class="toggle"><input type="checkbox"><span class="slider"></span></label>
+                  <div class="toggle-label">Inactive</div>
+                </div>
+              </td>
+              <td><button class="icon-btn blue" aria-label="Edit"><i class="ti ti-pencil"></i></button></td>
+              <td><button class="icon-btn red-btn" aria-label="Delete"><i class="ti ti-trash"></i></button></td>
+            </tr>
+            <tr>
+              <td class="check-col"><input type="checkbox"></td>
+              <td>orders</td>
+              <td>Order</td>
+              <td>
+                <span class="badge red"><span class="badge-dot" style="background:#d44030;"></span>12</span>
+              </td>
+              <td>
+                <div style="color:#b83a2e;">12 days ago</div>
+                <div class="sync-time red-t">24/05/2026, 11:02</div>
+              </td>
+              <td><span class="pill pending"><span class="pill-dot a"></span>Pending</span></td>
+              <td>
+                <div style="display:flex;flex-direction:column;gap:3px;align-items:flex-start;">
+                  <button class="play-btn" aria-label="Sync now"><i class="ti ti-player-play" aria-hidden="true"></i></button>
+                  <div class="sync-time">Never triggered</div>
+                </div>
+              </td>
+              <td>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                  <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                  <div class="toggle-label">Active</div>
+                </div>
+              </td>
+              <td><button class="icon-btn blue" aria-label="Edit"><i class="ti ti-pencil"></i></button></td>
+              <td><button class="icon-btn red-btn" aria-label="Delete"><i class="ti ti-trash"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <button class="pg-btn disabled"><i class="ti ti-chevron-left" aria-hidden="true"></i> Previous</button>
+          <span class="pg-info">Page 1 of 1</span>
+          <button class="pg-btn disabled">Next <i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Empty state -->
+  <div>
+    <div class="screen-label">Screen 2 — Mapping page (empty state)</div>
+    <div class="screen-frame">
+      <div class="topbar">
+        <div class="app-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="#fff"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#fff" opacity="0.7"/><rect x="2" y="9" width="5" height="5" rx="1" fill="#fff" opacity="0.7"/><rect x="9" y="9" width="5" height="5" rx="1" fill="#fff" opacity="0.4"/></svg>
+        </div>
+        <span class="topbar-title">Mapping</span>
+      </div>
+      <div class="page-body">
+
+        <!-- Guidance banner -->
+        <div class="guidance-banner">
+          <i class="ti ti-info-circle" aria-hidden="true"></i>
+          <p>This page shows all your active Salesforce ↔ Shelfwatch mappings. Use <strong>Sync Now</strong> to manually push data, or enable <strong>Auto Sync</strong> to keep data in sync automatically.</p>
+          <span class="dismiss">Dismiss ×</span>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="search-wrap">
+            <i class="ti ti-search" aria-hidden="true"></i>
+            <input class="search-inp" type="text" placeholder="Search mappings…">
+          </div>
+          <select class="filter-sel">
+            <option>All statuses</option>
+          </select>
+          <div class="spacer"></div>
+          <button class="btn-refresh"><i class="ti ti-refresh" aria-hidden="true"></i> Refresh All Entities</button>
+          <button class="btn-new"><i class="ti ti-plus" aria-hidden="true"></i> New Mapping</button>
+        </div>
+
+        <!-- Table header -->
+        <table>
+          <thead>
+            <tr>
+              <th class="check-col"><input type="checkbox"></th>
+              <th>Shelfwatch Entity</th>
+              <th>Salesforce Object</th>
+              <th>Unmapped Fields</th>
+              <th>Last Sync</th>
+              <th>Sync Status</th>
+              <th>Sync Now</th>
+              <th>Auto Sync</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+        </table>
+
+        <!-- Empty state -->
+        <div class="empty-state">
+          <div class="empty-icon"><i class="ti ti-git-merge" aria-hidden="true"></i></div>
+          <div class="empty-title">No mappings yet</div>
+          <div class="empty-sub">Connect your first Salesforce object to Shelfwatch to start syncing data.</div>
+          <button class="btn-empty-new"><i class="ti ti-plus" aria-hidden="true"></i> New Mapping</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

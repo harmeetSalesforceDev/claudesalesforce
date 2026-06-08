@@ -1,0 +1,176 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .figma-wrap { display: flex; flex-direction: column; gap: 48px; padding: 2rem 0; font-family: 'DM Sans', var(--font-sans), sans-serif; }
+  .screen-label { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .screen-frame { background: #f4f3f0; border-radius: 16px; padding: 28px; border: 0.5px solid var(--color-border-tertiary); }
+  .topbar { background: #fff; border-bottom: 0.5px solid #e5e4e0; padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; border-radius: 12px 12px 0 0; }
+  .topbar-left { display: flex; align-items: center; gap: 10px; }
+  .app-icon { width: 28px; height: 28px; background: #E8521A; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .topbar-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .main-card { background: #fff; border-radius: 0 0 12px 12px; padding: 28px 28px 32px; }
+  .branding-row { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 0.5px solid #eee; }
+  .branding-name { font-size: 15px; font-weight: 600; color: #1a1a1a; letter-spacing: -0.3px; }
+  .branding-sub { font-size: 11.5px; color: #888; }
+  .section-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 16px; }
+  .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .field-wrap { display: flex; flex-direction: column; gap: 5px; }
+  .field-label { font-size: 11px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.06em; }
+  .field-input { height: 38px; border: 1px solid #e2e1de; border-radius: 8px; padding: 0 12px; font-size: 13px; color: var(--color-text-secondary); background: #fafaf9; display: flex; align-items: center; }
+  .req-star { color: #E8521A; font-size: 12px; }
+  .btn-row { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+  .btn-authorize { background: #E8521A; color: #fff; border: none; border-radius: 8px; padding: 0 22px; height: 38px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .help-text { font-size: 11.5px; color: #aaa; }
+  .status-bar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #f9f8f6; border-radius: 8px; border: 0.5px solid #e8e7e3; margin-bottom: 18px; }
+  .status-pill { display: flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 500; background: #eaf6ee; color: #2a7a3b; border: 0.5px solid #b2debb; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #2da84d; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+  .info-card { background: #f9f8f6; border-radius: 8px; padding: 12px 14px; border: 0.5px solid #e8e7e3; }
+  .info-card-label { font-size: 10.5px; font-weight: 500; color: #aaa; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .info-card-val { font-size: 13px; color: var(--color-text-primary); font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .monospace { font-family: var(--font-mono), monospace; font-size: 12.5px; color: #555; background: #efeeea; padding: 2px 7px; border-radius: 4px; }
+  .authorized-badge { display: flex; align-items: center; gap: 6px; padding: 7px 14px; background: #eef7ef; border: 0.5px solid #b6deba; border-radius: 8px; margin-bottom: 18px; }
+  .check-icon { width: 20px; height: 20px; background: #2da84d; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .check-icon i { font-size: 12px; color: #fff; }
+  .authorized-text { font-size: 13px; font-weight: 500; color: #2a7a3b; }
+  .authorized-sub { font-size: 11.5px; color: #5a9e68; margin-left: auto; }
+  .cta-row { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+  .btn-next { background: #E8521A; color: #fff; border: none; border-radius: 8px; padding: 0 20px; height: 38px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 7px; }
+  .btn-danger { background: transparent; color: #b83a2e; border: 1px solid #f0b8b4; border-radius: 8px; padding: 0 14px; height: 36px; font-size: 12.5px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .divider { height: 0.5px; background: #eee; margin: 18px 0; }
+  .reset-section { display: flex; align-items: center; justify-content: space-between; }
+  .reset-label { font-size: 11.5px; color: #bbb; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+
+<div class="figma-wrap">
+
+  <!-- SCREEN 1 -->
+  <div>
+    <div class="screen-label">Screen 1 — Add credentials (pre-authorization)</div>
+    <div class="screen-frame">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="app-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="#fff"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#fff" opacity="0.6"/><rect x="2" y="9" width="5" height="5" rx="1" fill="#fff" opacity="0.6"/><rect x="9" y="9" width="5" height="5" rx="1" fill="#fff" opacity="0.35"/></svg>
+          </div>
+          <span class="topbar-title">Configuration Page</span>
+        </div>
+      </div>
+      <div class="main-card">
+        <div class="branding-row">
+          <div style="display:flex;align-items:center;gap:4px;">
+            <div style="display:flex;flex-direction:column;gap:2px;">
+              <div style="display:flex;gap:3px;"><div style="width:11px;height:11px;border-radius:50%;background:#E8521A;"></div><div style="width:11px;height:11px;border-radius:50%;background:#E8521A;opacity:0.5;"></div></div>
+              <div style="display:flex;gap:3px;"><div style="width:7px;height:7px;border-radius:50%;background:#E8521A;opacity:0.7;"></div><div style="width:7px;height:7px;border-radius:50%;background:#E8521A;opacity:0.35;"></div></div>
+            </div>
+            <span class="branding-name" style="margin-left:4px;">ParallelDots</span>
+          </div>
+          <div style="width:1px;height:20px;background:#e0ddd9;margin:0 4px;"></div>
+          <span class="branding-sub">Syncing your Salesforce data with ParallelDots AI</span>
+        </div>
+        <div class="section-title">Add Credentials</div>
+        <div class="fields-grid">
+          <div class="field-wrap">
+            <div class="field-label">Client Id <span class="req-star">*</span></div>
+            <div class="field-input"><span style="color:#ccc;font-size:12px;">Enter client ID</span></div>
+          </div>
+          <div class="field-wrap">
+            <div class="field-label">Client Secret <span class="req-star">*</span></div>
+            <div class="field-input"><span style="color:#ccc;font-size:12px;">Enter client secret</span></div>
+          </div>
+          <div class="field-wrap">
+            <div class="field-label">Org Id <span class="req-star">*</span></div>
+            <div class="field-input"><span style="color:#ccc;font-size:12px;">Enter org ID</span></div>
+          </div>
+          <div class="field-wrap">
+            <div class="field-label">Project Id <span class="req-star">*</span></div>
+            <div class="field-input"><span style="color:#ccc;font-size:12px;">Enter project ID</span></div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-authorize"><i class="ti ti-lock-open" aria-hidden="true"></i> Authorize</button>
+          <span class="help-text">All fields are required to connect</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2 -->
+  <div>
+    <div class="screen-label">Screen 2 — Post-authorization (connected state)</div>
+    <div class="screen-frame">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="app-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="#fff"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#fff" opacity="0.6"/><rect x="2" y="9" width="5" height="5" rx="1" fill="#fff" opacity="0.6"/><rect x="9" y="9" width="5" height="5" rx="1" fill="#fff" opacity="0.35"/></svg>
+          </div>
+          <span class="topbar-title">Configuration Page</span>
+        </div>
+      </div>
+      <div class="main-card">
+        <div class="branding-row">
+          <div style="display:flex;align-items:center;gap:4px;">
+            <div style="display:flex;flex-direction:column;gap:2px;">
+              <div style="display:flex;gap:3px;"><div style="width:11px;height:11px;border-radius:50%;background:#E8521A;"></div><div style="width:11px;height:11px;border-radius:50%;background:#E8521A;opacity:0.5;"></div></div>
+              <div style="display:flex;gap:3px;"><div style="width:7px;height:7px;border-radius:50%;background:#E8521A;opacity:0.7;"></div><div style="width:7px;height:7px;border-radius:50%;background:#E8521A;opacity:0.35;"></div></div>
+            </div>
+            <span class="branding-name" style="margin-left:4px;">ParallelDots</span>
+          </div>
+          <div style="width:1px;height:20px;background:#e0ddd9;margin:0 4px;"></div>
+          <span class="branding-sub">Syncing your Salesforce data with ParallelDots AI</span>
+        </div>
+
+        <!-- Authorized badge -->
+        <div class="authorized-badge">
+          <div class="check-icon"><i class="ti ti-check" aria-hidden="true"></i></div>
+          <span class="authorized-text">Authorized Successfully</span>
+          <span class="authorized-sub">Authorized on May 29, 2026 by admin@company.com</span>
+        </div>
+
+        <!-- Status bar — only Connected pill, no timestamp or refresh -->
+        <div class="status-bar">
+          <div class="status-pill">
+            <div class="status-dot"></div>
+            Connected
+          </div>
+        </div>
+
+        <!-- Account info -->
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="info-card-label">API Key</div>
+            <div class="info-card-val"><span class="monospace">pk_••••••••3f9a</span></div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-label">Organization</div>
+            <div class="info-card-val"><i class="ti ti-building" aria-hidden="true" style="font-size:15px;color:#aaa;"></i> Acme Corp (org_8d2f1a)</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-label">Project</div>
+            <div class="info-card-val"><i class="ti ti-folder" aria-hidden="true" style="font-size:15px;color:#aaa;"></i> proj_salesforce_main</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-label">Authorized By</div>
+            <div class="info-card-val" style="font-size:12px;font-weight:400;color:#666;">admin@company.com</div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-row">
+          <button class="btn-next"><i class="ti ti-arrow-right" aria-hidden="true"></i> Go to New Mapping</button>
+          <span style="font-size:11.5px;color:#bbb;">Setup complete — proceed to configure field mappings</span>
+        </div>
+
+        <!-- Danger zone -->
+        <div class="divider"></div>
+        <div class="reset-section">
+          <span class="reset-label"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:13px;vertical-align:-2px;"></i> Danger zone</span>
+          <button class="btn-danger"><i class="ti ti-rotate-clockwise-2" aria-hidden="true"></i> Reset Credentials</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

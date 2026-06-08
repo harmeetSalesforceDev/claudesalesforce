@@ -1,0 +1,399 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .wrap { display: flex; flex-direction: column; gap: 48px; padding: 2rem 0; font-family: 'DM Sans', var(--font-sans), sans-serif; }
+  .screen-label { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .screen-frame { background: #f4f3f0; border-radius: 16px; padding: 28px; border: 0.5px solid var(--color-border-tertiary); }
+  .topbar { background: #fff; border-bottom: 0.5px solid #e5e4e0; padding: 0 24px; height: 52px; display: flex; align-items: center; gap: 10px; border-radius: 12px 12px 0 0; }
+  .app-icon { width: 28px; height: 28px; background: #E8521A; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .topbar-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .page-body { background: #fff; border-radius: 0 0 12px 12px; overflow: hidden; }
+
+  .status-strip { background: #E8521A; padding: 12px 20px; display: flex; align-items: center; gap: 0; }
+  .strip-item { display: flex; flex-direction: column; gap: 2px; padding: 0 20px; border-right: 1px solid rgba(255,255,255,0.25); }
+  .strip-item:first-child { padding-left: 0; }
+  .strip-item:last-child { border-right: none; }
+  .strip-label { font-size: 10px; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.06em; }
+  .strip-val { font-size: 13px; font-weight: 500; color: #fff; }
+  .strip-val.green { color: #a8f0b8; }
+  .strip-val.amber { color: #fde68a; }
+  .strip-val.red { color: #fca5a5; }
+  .strip-tip { margin-left: auto; font-size: 11.5px; color: rgba(255,255,255,0.65); display: flex; align-items: center; gap: 5px; font-style: italic; padding-left: 20px; }
+  .strip-tip i { font-size: 13px; }
+
+  .content-area { padding: 20px; }
+
+  .top-row { display: flex; gap: 14px; margin-bottom: 18px; }
+
+  .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; flex: 1; }
+  .stat-card { background: #f9f8f6; border-radius: 8px; padding: 12px 14px; border: 0.5px solid #e8e7e3; }
+  .stat-label { font-size: 10.5px; font-weight: 500; color: #aaa; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
+  .stat-val { font-size: 20px; font-weight: 600; color: var(--color-text-primary); line-height: 1.1; }
+  .stat-sub { font-size: 11px; color: #aaa; margin-top: 3px; }
+  .stat-val.red { color: #b83a2e; }
+  .stat-val.green { color: #2a7a3b; }
+
+  .filters-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 0.5px solid #eee; }
+  .field-group { display: flex; flex-direction: column; gap: 4px; }
+  .field-group label { font-size: 11px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 4px; }
+  .field-group label i { font-size: 12px; color: #ccc; cursor: help; }
+  .sel, .inp { height: 34px; border: 1px solid #e2e1de; border-radius: 7px; padding: 0 10px; font-size: 12.5px; background: #fafaf9; color: var(--color-text-primary); }
+  .sel.wide { min-width: 220px; }
+  .date-inputs { display: flex; gap: 6px; align-items: center; }
+  .date-inp { height: 34px; border: 1px solid #e2e1de; border-radius: 7px; padding: 0 8px; font-size: 12px; background: #fafaf9; color: var(--color-text-secondary); width: 120px; }
+  .date-sep { font-size: 11.5px; color: #bbb; }
+  .btn-apply { height: 34px; padding: 0 16px; border: none; border-radius: 7px; font-size: 12.5px; background: #E8521A; color: #fff; cursor: pointer; font-weight: 500; align-self: flex-end; }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: #fafaf9; border-bottom: 0.5px solid #eee; }
+  th { padding: 9px 14px; font-size: 11px; font-weight: 500; color: #999; text-align: left; white-space: nowrap; }
+  td { padding: 11px 14px; font-size: 12.5px; color: var(--color-text-primary); border-bottom: 0.5px solid #f2f1ee; vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #fdfcfb; }
+
+  .pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 500; }
+  .pill.success { background: #eef7ef; color: #2a7a3b; border: 0.5px solid #b6deba; }
+  .pill.failed { background: #fdf0ef; color: #b83a2e; border: 0.5px solid #f0b8b4; }
+  .pill.partial { background: #fef9ec; color: #92600a; border: 0.5px solid #f5d98a; }
+  .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .pill-dot.g { background: #2da84d; }
+  .pill-dot.r { background: #d44030; }
+  .pill-dot.a { background: #d4880a; }
+
+  .trigger-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: 500; }
+  .trigger-badge.manual { background: #eef3ff; color: #3B5FDB; border: 0.5px solid #c5d2f8; }
+  .trigger-badge.auto { background: #f0fdf4; color: #166534; border: 0.5px solid #bbf7d0; }
+  .trigger-badge.token { background: #f5f3ff; color: #5b21b6; border: 0.5px solid #ddd6fe; }
+
+  .name-cell { font-weight: 500; font-size: 13px; }
+  .name-sub { font-size: 11px; color: #aaa; margin-top: 2px; }
+
+  .progress-bar { height: 5px; background: #eee; border-radius: 3px; margin-top: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 3px; }
+  .progress-fill.green { background: #2da84d; }
+  .progress-fill.red { background: #d44030; }
+
+  .btn-error { height: 26px; padding: 0 10px; border: 1px solid #f0b8b4; border-radius: 6px; font-size: 11.5px; background: #fff; color: #b83a2e; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+  .btn-error i { font-size: 13px; }
+  .btn-details { height: 26px; padding: 0 10px; border: 1px solid #e2e1de; border-radius: 6px; font-size: 11.5px; background: #fff; color: #555; cursor: pointer; }
+
+  .pagination { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px 20px; border-top: 0.5px solid #eee; }
+  .pg-btn { height: 32px; padding: 0 14px; border: 1px solid #e2e1de; border-radius: 20px; font-size: 12.5px; background: #fff; color: var(--color-text-secondary); cursor: pointer; display: flex; align-items: center; gap: 5px; }
+  .pg-btn.disabled { opacity: 0.4; cursor: default; }
+  .pg-info { font-size: 12px; color: #aaa; }
+
+  .empty-area { padding: 56px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .empty-icon { width: 48px; height: 48px; background: #f4f3f0; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+  .empty-icon i { font-size: 22px; color: #ccc; }
+  .empty-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .empty-sub { font-size: 12.5px; color: #aaa; text-align: center; max-width: 320px; line-height: 1.6; }
+  .btn-empty { height: 34px; padding: 0 16px; border: none; border-radius: 8px; font-size: 13px; background: #E8521A; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 500; margin-top: 4px; }
+
+  .tooltip-wrap { display: inline-flex; align-items: center; gap: 4px; }
+  .tip-i { font-size: 12px; color: #ccc; cursor: help; }
+
+  .records-cell { display: flex; flex-direction: column; gap: 3px; min-width: 80px; }
+  .rec-row { display: flex; justify-content: space-between; font-size: 11.5px; }
+  .rec-label { color: #aaa; }
+  .rec-val { font-weight: 500; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+
+<div class="wrap">
+
+  <!-- SCREEN 1: No mapping selected -->
+  <div>
+    <div class="screen-label">Screen 1 — Sync logs (no mapping selected)</div>
+    <div class="screen-frame">
+      <div class="topbar">
+        <div class="app-icon"><i class="ti ti-activity" style="font-size:15px;color:#fff;" aria-hidden="true"></i></div>
+        <span class="topbar-title">Sync Logs</span>
+      </div>
+      <div class="page-body">
+
+        <!-- Live status strip -->
+        <div class="status-strip">
+          <div class="strip-item">
+            <span class="strip-label">Last Sync</span>
+            <span class="strip-val">2 mins ago</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-label">Overall Health</span>
+            <span class="strip-val green">● Healthy</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-label">Syncs Today</span>
+            <span class="strip-val">14</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-label">Next Scheduled</span>
+            <span class="strip-val">in 28 mins</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-label">Last Failed</span>
+            <span class="strip-val red">SL-0087</span>
+          </div>
+          <div class="strip-tip"><i class="ti ti-info-circle" aria-hidden="true"></i> Sync Monitor shows history for every sync run. Use this to debug failures and verify data flow.</div>
+        </div>
+
+        <div class="content-area">
+
+          <!-- Summary stats -->
+          <div class="stat-cards" style="margin-bottom:18px;">
+            <div class="stat-card">
+              <div class="stat-label">Total syncs this week</div>
+              <div class="stat-val">87</div>
+              <div class="stat-sub">Across all mappings</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Records synced this week</div>
+              <div class="stat-val green">42,310</div>
+              <div class="stat-sub">↑ 12% vs last week</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Failed syncs this week</div>
+              <div class="stat-val red">3</div>
+              <div class="stat-sub">Last: SL-0087, 2h ago</div>
+            </div>
+          </div>
+
+          <!-- Filters row (before mapping selected) -->
+          <div class="filters-row">
+            <div class="field-group">
+              <label>
+                <span class="tooltip-wrap">Select Mapping <i class="ti ti-info-circle tip-i" aria-label="Select a Shelfwatch ↔ Salesforce mapping to view its full sync history."></i></span>
+              </label>
+              <select class="sel wide">
+                <option>Search and select a mapping…</option>
+                <option>All Mappings</option>
+                <option>Contact (SF) → stores (Shelfwatch)</option>
+                <option>Product2 (SF) → products (Shelfwatch)</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Status</label>
+              <select class="sel">
+                <option>All statuses</option>
+                <option>Success</option>
+                <option>Failed</option>
+                <option>Partial</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Trigger Type <i class="ti ti-info-circle tip-i" aria-label="Manual = Sync Now button. Auto = Auto Sync schedule. Token Job = background client token job."></i></label>
+              <select class="sel">
+                <option>All triggers</option>
+                <option>Manual</option>
+                <option>Auto</option>
+                <option>Token Job</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Date Range</label>
+              <div class="date-inputs">
+                <input type="text" class="date-inp" placeholder="Jun 01, 2026">
+                <span class="date-sep">→</span>
+                <input type="text" class="date-inp" placeholder="Jun 05, 2026">
+              </div>
+            </div>
+            <button class="btn-apply">Apply</button>
+          </div>
+
+          <!-- Empty state -->
+          <div class="empty-area">
+            <div class="empty-icon"><i class="ti ti-list-search" aria-hidden="true"></i></div>
+            <div class="empty-title">No mapping selected</div>
+            <div class="empty-sub">Select a mapping above to view its full sync history — including timestamps, record counts, and error details.</div>
+            <button class="btn-empty"><i class="ti ti-git-merge" aria-hidden="true"></i> Go to New Mapping</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Mapping selected, logs shown -->
+  <div>
+    <div class="screen-label">Screen 2 — Sync logs (mapping selected, with records)</div>
+    <div class="screen-frame">
+      <div class="topbar">
+        <div class="app-icon"><i class="ti ti-activity" style="font-size:15px;color:#fff;" aria-hidden="true"></i></div>
+        <span class="topbar-title">Sync Logs</span>
+      </div>
+      <div class="page-body">
+
+        <!-- Live status strip -->
+        <div class="status-strip">
+          <div class="strip-item">
+            <span class="strip-label">Last Sync</span>
+            <span class="strip-val">2 mins ago</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-label">Overall Health</span>
+            <span class="strip-val amber">● Degraded</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-label">Syncs Today</span>
+            <span class="strip-val">14</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-label">Next Scheduled</span>
+            <span class="strip-val">in 28 mins</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-label">Last Failed</span>
+            <span class="strip-val red">SL-0087</span>
+          </div>
+          <div class="strip-tip"><i class="ti ti-info-circle" aria-hidden="true"></i> Sync Monitor shows history for every sync run. Use this to debug failures and verify data flow.</div>
+        </div>
+
+        <div class="content-area">
+
+          <!-- Summary stats for selected mapping -->
+          <div class="stat-cards" style="margin-bottom:18px;">
+            <div class="stat-card">
+              <div class="stat-label">Total runs — this mapping</div>
+              <div class="stat-val">23</div>
+              <div class="stat-sub">Contact → stores</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Records synced (total)</div>
+              <div class="stat-val green">11,420</div>
+              <div class="stat-sub">of 5,901 in latest run</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Failed runs</div>
+              <div class="stat-val red">2</div>
+              <div class="stat-sub">Last: Jun 05, 2026</div>
+            </div>
+          </div>
+
+          <!-- Filters row -->
+          <div class="filters-row">
+            <div class="field-group">
+              <label>
+                <span class="tooltip-wrap">Select Mapping <i class="ti ti-info-circle tip-i" aria-label="Select a Shelfwatch ↔ Salesforce mapping to view its full sync history."></i></span>
+              </label>
+              <select class="sel wide">
+                <option selected>Contact (SF) → stores (Shelfwatch)</option>
+                <option>All Mappings</option>
+                <option>Product2 (SF) → products (Shelfwatch)</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Status</label>
+              <select class="sel">
+                <option>All statuses</option>
+                <option>Success</option>
+                <option selected>Failed</option>
+                <option>Partial</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>
+                <span class="tooltip-wrap">Trigger Type <i class="ti ti-info-circle tip-i" aria-label="Manual = Sync Now button. Auto = Auto Sync schedule. Token Job = background client token job."></i></span>
+              </label>
+              <select class="sel">
+                <option>All triggers</option>
+                <option>Manual</option>
+                <option>Auto</option>
+                <option>Token Job</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Date Range</label>
+              <div class="date-inputs">
+                <input type="text" class="date-inp" value="Jun 01, 2026">
+                <span class="date-sep">→</span>
+                <input type="text" class="date-inp" value="Jun 05, 2026">
+              </div>
+            </div>
+            <button class="btn-apply">Apply</button>
+          </div>
+
+          <!-- Log table -->
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>
+                  <span class="tooltip-wrap">Trigger Type <i class="ti ti-info-circle tip-i" aria-label="Manual = Sync Now. Auto = scheduled. Token Job = background job."></i></span>
+                </th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Records</th>
+                <th>Errors</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="name-cell">SL-0087</div>
+                  <div class="name-sub">Contact → stores</div>
+                </td>
+                <td><span class="pill failed"><span class="pill-dot r"></span>Failed</span></td>
+                <td><span class="trigger-badge manual">Manual</span></td>
+                <td>Jun 05, 2026 10:29 AM</td>
+                <td>Jun 05, 2026 10:29 AM</td>
+                <td>
+                  <div class="records-cell">
+                    <div class="rec-row"><span class="rec-label">To sync</span><span class="rec-val">5,901</span></div>
+                    <div class="rec-row"><span class="rec-label">Synced</span><span class="rec-val" style="color:#2a7a3b;">200</span></div>
+                    <div class="progress-bar"><div class="progress-fill red" style="width:3%;"></div></div>
+                  </div>
+                </td>
+                <td><button class="btn-error"><i class="ti ti-alert-triangle" aria-hidden="true"></i> View Error</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="name-cell">SL-0086</div>
+                  <div class="name-sub">Contact → stores</div>
+                </td>
+                <td><span class="pill success"><span class="pill-dot g"></span>Success</span></td>
+                <td><span class="trigger-badge auto">Auto</span></td>
+                <td>Jun 04, 2026 08:00 AM</td>
+                <td>Jun 04, 2026 08:03 AM</td>
+                <td>
+                  <div class="records-cell">
+                    <div class="rec-row"><span class="rec-label">To sync</span><span class="rec-val">5,901</span></div>
+                    <div class="rec-row"><span class="rec-label">Synced</span><span class="rec-val" style="color:#2a7a3b;">5,901</span></div>
+                    <div class="progress-bar"><div class="progress-fill green" style="width:100%;"></div></div>
+                  </div>
+                </td>
+                <td><button class="btn-details">Details</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="name-cell">SL-0085</div>
+                  <div class="name-sub">Contact → stores</div>
+                </td>
+                <td><span class="pill partial"><span class="pill-dot a"></span>Partial</span></td>
+                <td><span class="trigger-badge token">Token Job</span></td>
+                <td>Jun 03, 2026 02:00 AM</td>
+                <td>Jun 03, 2026 02:07 AM</td>
+                <td>
+                  <div class="records-cell">
+                    <div class="rec-row"><span class="rec-label">To sync</span><span class="rec-val">5,901</span></div>
+                    <div class="rec-row"><span class="rec-label">Synced</span><span class="rec-val" style="color:#92600a;">3,240</span></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width:55%;background:#d4880a;"></div></div>
+                  </div>
+                </td>
+                <td><button class="btn-error"><i class="ti ti-alert-triangle" aria-hidden="true"></i> View Error</button></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="pagination">
+            <button class="pg-btn disabled"><i class="ti ti-chevron-left" aria-hidden="true"></i> Previous</button>
+            <span class="pg-info">Page 1 of 1</span>
+            <button class="pg-btn disabled">Next <i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
